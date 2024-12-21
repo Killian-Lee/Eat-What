@@ -1,4 +1,15 @@
 # Python
 __pycache__/
-.db
+*.py[cod]
+*$py.class
+
+# 数据库文件
+*.db
+*.sqlite3
+
+# 日志文件
 *.log
+
+# 不要忽略这些文件
+!requirements.txt
+!DigiCertGlobalRootCA.crt.pem
