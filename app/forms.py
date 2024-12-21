@@ -73,19 +73,25 @@ class ResetPasswordForm(FlaskForm):
 
 class RandomSearchForm(FlaskForm):
     canteen = SelectField('食堂', choices=[
+        ('', '请选择食堂'),
         ('星南', '星南'),
         ('星北', '星北'),
         ('云餐', '云餐')
     ])
-    floor = SelectField('楼层', choices=[])
+    floor = SelectField('楼层', choices=[
+        ('', '请选择楼层'),
+        ('2', '2楼'),
+        ('3', '3楼')
+    ])
     min_price = StringField('最低价格')
     max_price = StringField('最高价格')
     min_rating = SelectField('最低评分', choices=[
-        (1, '1星'),
-        (2, '2星'),
-        (3, '3星'),
-        (4, '4星'),
-        (5, '5星')
+        ('', '请选择最低评分'),
+        ('1', '1星'),
+        ('2', '2星'),
+        ('3', '3星'),
+        ('4', '4星'),
+        ('5', '5星')
     ])
     submit = SubmitField('随机选择')
   

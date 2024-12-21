@@ -166,26 +166,23 @@ def reset_password():
 def random_window():
     form = RandomSearchForm()
     
-    # 动态更新楼层选项
-    if form.canteen.data:
-        floors = db.session.query(Canteen.floor).filter_by(name=form.canteen.data).all()
-        form.floor.choices = [(str(f[0]), f'{f[0]}楼') for f in floors]
-    else:
-        form.floor.choices = []
-
     if form.validate_on_submit():
         # 构建查询
         query = Window.query.join(Canteen)
         
-        # 应用筛选条件
+        # 只有当用户选择了食堂时才筛选
         if form.canteen.data:
             query = query.filter(Canteen.name == form.canteen.data)
+        # 只有当用户选择了楼层时才筛选
         if form.floor.data:
             query = query.filter(Canteen.floor == int(form.floor.data))
+        # 只有当用户输入了最低价格时才筛选
         if form.min_price.data:
             query = query.filter(Window.min_price >= float(form.min_price.data))
+        # 只有当用户输入了最高价格时才筛选
         if form.max_price.data:
             query = query.filter(Window.max_price <= float(form.max_price.data))
+        # 只有当用户选择了最低评分时才筛选
         if form.min_rating.data:
             query = query.filter(Window.avg_rating >= float(form.min_rating.data))
             
