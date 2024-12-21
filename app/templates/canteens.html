@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}食堂列表{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">食堂列表</h1>
+    <div class="row">
+        {% for canteen_name, floors in canteen_data.items() %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ canteen_name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for floor in floors %}
+                        <a href="{{ url_for('auth.view_canteen', name=canteen_name, floor=floor.floor) }}" 
+                           class="list-group-item list-group-item-action">
+                            {{ floor.floor }}楼
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

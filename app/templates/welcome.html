@@ -8,13 +8,13 @@
         <div class="card">
             <div class="card-body text-center">
                 <h1 class="card-title mb-4">欢迎来到 Eat What！</h1>
-                <p class="card-text">您已成功注册，现在可以：</p>
+                <p class="card-text">您已成功登录，现在可以：</p>
                 <div class="list-group mb-4">
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{{ url_for('auth.list_canteens') }}" class="list-group-item list-group-item-action">
                         <h5 class="mb-1">浏览食堂窗口</h5>
                         <p class="mb-1">查看所有食堂的窗口信息和评分</p>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{{ url_for('auth.random_window') }}" class="list-group-item list-group-item-action">
                         <h5 class="mb-1">随机推荐</h5>
                         <p class="mb-1">让系统帮您选择今天吃什么</p>
                     </a>
@@ -23,7 +23,7 @@
                         <p class="mb-1">分享您的用餐体验</p>
                     </a>
                 </div>
-                <a href="#" class="btn btn-primary">开始探索</a>
+                <a href="{{ url_for('auth.random_window') }}" class="btn btn-primary">开始探索</a>
             </div>
         </div>
     </div>

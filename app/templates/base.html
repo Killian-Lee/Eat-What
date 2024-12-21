@@ -14,20 +14,10 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">浏览食堂</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.random_window') }}">随机推荐</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="nav-link">{{ current_user.email }}</span>
+                        <span class="nav-link">{{ current_user.username }}</span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">登出</a>
@@ -37,7 +27,7 @@
                         <a class="nav-link" href="{{ url_for('auth.login') }}">登录</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}">注册</a>
+                        <a class="nav-link" href="{{ url_for('auth.register_email') }}">注册</a>
                     </li>
                     {% endif %}
                 </ul>

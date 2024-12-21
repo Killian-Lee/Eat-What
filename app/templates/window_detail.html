@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ window.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('auth.list_canteens') }}">食堂列表</a></li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('auth.view_canteen', name=window.canteen.name, floor=window.canteen.floor) }}">
+                    {{ window.canteen.name }}{{ window.canteen.floor }}楼
+                </a>
+            </li>
+            <li class="breadcrumb-item active">{{ window.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h1 class="card-title">{{ window.name }}</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>窗口编号：</strong>{{ window.number }}</p>
+                    <p><strong>价格范围：</strong>{{ window.min_price }}-{{ window.max_price }}元</p>
+                    <p><strong>平均评分：</strong>⭐{{ "%.1f"|format(window.avg_rating) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>评论列表</h3>
+        </div>
+        <div class="card-body">
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ comment.author.username }}</strong>
+                        <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <p class="mb-1">{{ comment.content }}</p>
+                    <hr>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">暂无评论</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

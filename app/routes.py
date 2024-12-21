@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, session, jsonify
 from app.forms import (LoginForm, EmailVerificationForm, RegistrationForm, 
                       ResetPasswordRequestForm, ResetPasswordForm, RandomSearchForm)
-from app.models import User, Window, Canteen
+from app.models import User, Window, Canteen, Comment
 from app import db
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
@@ -156,7 +156,7 @@ def reset_password():
             session.pop('reset_email', None)
             session.pop('reset_expiration', None)
             
-            flash('密码已重置，请使用新密���登录', 'success')
+            flash('密码已重置，请使用新密码登录', 'success')
             return redirect(url_for('auth.login'))
             
     return render_template('reset_password.html', form=form)
@@ -206,3 +206,33 @@ def random_window():
 def get_floors(canteen):
     floors = db.session.query(Canteen.floor).filter_by(name=canteen).all()
     return jsonify([(str(f[0]), f'{f[0]}楼') for f in floors])
+
+@auth_bp.route('/canteens')
+@login_required
+def list_canteens():
+    """显示所有食堂"""
+    canteens = db.session.query(Canteen.name).distinct().all()
+    canteen_data = {}
+    
+    for c in canteens:
+        canteen_name = c[0]
+        floors = Canteen.query.filter_by(name=canteen_name).all()
+        canteen_data[canteen_name] = floors
+        
+    return render_template('canteens.html', canteen_data=canteen_data)
+
+@auth_bp.route('/canteen/<name>/<int:floor>')
+@login_required
+def view_canteen(name, floor):
+    """显示特定食堂特定楼层的窗口"""
+    canteen = Canteen.query.filter_by(name=name, floor=floor).first_or_404()
+    windows = Window.query.filter_by(canteen_id=canteen.id).order_by(Window.number).all()
+    return render_template('canteen_detail.html', canteen=canteen, windows=windows)
+
+@auth_bp.route('/window/<int:id>')
+@login_required
+def view_window(id):
+    """显示窗口详情"""
+    window = Window.query.get_or_404(id)
+    comments = Comment.query.filter_by(window_id=id).order_by(Comment.created_at.desc()).all()
+    return render_template('window_detail.html', window=window, comments=comments)
