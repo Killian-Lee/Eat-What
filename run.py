@@ -45,7 +45,7 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
+    app.run(host='0.0.0.0', port=8000)
 else:
-    # 这是关键：在 gunicorn 启动时也初始化数据库
     print("通过 gunicorn 启动，初始化数据库...")
     init_db()
