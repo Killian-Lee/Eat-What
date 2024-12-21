@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}推荐结果{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="mb-4">为您推荐</h2>
+                <div class="alert alert-success">
+                    <h3>{{ window.canteen.name }}{{ window.canteen.floor }}楼 {{ window.name }}</h3>
+                    <p class="mb-2">窗口编号：{{ window.number }}</p>
+                    <p class="mb-2">价格范围：{{ window.min_price }}-{{ window.max_price }}元</p>
+                    <p class="mb-2">平均评分：{{ "%.1f"|format(window.avg_rating) }}星</p>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url_for('auth.random_window') }}" class="btn btn-primary">重新随机</a>
+                    <a href="#" class="btn btn-outline-primary">查看详情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

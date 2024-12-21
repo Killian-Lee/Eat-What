@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}随机推荐{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">随机推荐</h2>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.canteen.label(class="form-label") }}
+                        {{ form.canteen(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.floor.label(class="form-label") }}
+                        {{ form.floor(class="form-control") }}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            {{ form.min_price.label(class="form-label") }}
+                            {{ form.min_price(class="form-control", type="number", step="0.1") }}
+                        </div>
+                        <div class="col">
+                            {{ form.max_price.label(class="form-label") }}
+                            {{ form.max_price(class="form-control", type="number", step="0.1") }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.min_rating.label(class="form-label") }}
+                        {{ form.min_rating(class="form-control") }}
+                    </div>
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 当食堂选择改变时更新楼层选项
+document.getElementById('canteen').addEventListener('change', function() {
+    const canteen = this.value;
+    const floorSelect = document.getElementById('floor');
+    
+    // 清空现有选项
+    floorSelect.innerHTML = '';
+    
+    if (canteen) {
+        // 发送AJAX请求获取楼层
+        fetch(`/get-floors/${canteen}`)
+            .then(response => response.json())
+            .then(floors => {
+                floors.forEach(([value, text]) => {
+                    const option = new Option(text, value);
+                    floorSelect.add(option);
+                });
+            });
+    }
+});
+</script>
+{% endblock %} 

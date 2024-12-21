@@ -24,25 +24,27 @@ def init_db():
     cursor.close()
     conn.close()
 
-    # 创建表
+    # 创建表（如果不存在）
     with app.app_context():
-        print("开始创建表...")
-        # 先删除所有表（如果存在）
-        db.drop_all()
-        # 创建所有表
-        db.create_all()
-        print("表创建成功")
-        # 初始化基础数据
-        print("开始初始化基础数据...")
-        init_canteens_and_windows()
-        print("基础数据初始化完成")
+        print("检查并创建表...")
+        # 删除 db.drop_all() 这行，这样就不会删除现有数据
+        db.create_all()  # 只创建不存在的表
+        print("表创建/更新成功")
+        
+        # 检查是否需要初始化食堂数据
+        from app.models import Canteen
+        if not Canteen.query.first():  # 如果没有食堂数据才初始化
+            print("开始初始化基础数据...")
+            init_canteens_and_windows()
+            print("基础数据初始化完成")
+        else:
+            print("食堂数据已存在，跳过初始化")
 
 if __name__ == '__main__':
     init_db()  # 初始化数据库
     
-    # 验证表是否创建成功
+    # 验证表是否存在
     with app.app_context():
-        # 连接到指定的数据库
         conn = pymysql.connect(
             host=app.config['MYSQL_HOST'],
             port=app.config['MYSQL_PORT'],
@@ -53,7 +55,7 @@ if __name__ == '__main__':
         cursor = conn.cursor()
         cursor.execute("SHOW TABLES")
         tables = cursor.fetchall()
-        print("\n创建的表:")
+        print("\n现有的表:")
         for table in tables:
             print(f"- {table[0]}")
         cursor.close()

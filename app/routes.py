@@ -1,12 +1,13 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, session
+from flask import Blueprint, render_template, flash, redirect, url_for, request, session, jsonify
 from app.forms import (LoginForm, EmailVerificationForm, RegistrationForm, 
-                      ResetPasswordRequestForm, ResetPasswordForm)
-from app.models import User
+                      ResetPasswordRequestForm, ResetPasswordForm, RandomSearchForm)
+from app.models import User, Window, Canteen
 from app import db
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from app.utils import generate_verification_code, send_verification_email
 from datetime import datetime, timedelta
+import random
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -123,7 +124,7 @@ def reset_password_request():
             except Exception as e:
                 flash('发送验证码失败，请稍后重试', 'danger')
         else:
-            flash('该邮箱未注���', 'danger')
+            flash('该邮箱未注册', 'danger')
             
     return render_template('reset_password_request.html', form=form)
 
@@ -155,7 +156,53 @@ def reset_password():
             session.pop('reset_email', None)
             session.pop('reset_expiration', None)
             
-            flash('密码已重置，请使用新密码登录', 'success')
+            flash('密码已重置，请使用新密���登录', 'success')
             return redirect(url_for('auth.login'))
             
     return render_template('reset_password.html', form=form)
+
+@auth_bp.route('/random', methods=['GET', 'POST'])
+@login_required
+def random_window():
+    form = RandomSearchForm()
+    
+    # 动态更新楼层选项
+    if form.canteen.data:
+        floors = db.session.query(Canteen.floor).filter_by(name=form.canteen.data).all()
+        form.floor.choices = [(str(f[0]), f'{f[0]}楼') for f in floors]
+    else:
+        form.floor.choices = []
+
+    if form.validate_on_submit():
+        # 构建查询
+        query = Window.query.join(Canteen)
+        
+        # 应用筛选条件
+        if form.canteen.data:
+            query = query.filter(Canteen.name == form.canteen.data)
+        if form.floor.data:
+            query = query.filter(Canteen.floor == int(form.floor.data))
+        if form.min_price.data:
+            query = query.filter(Window.min_price >= float(form.min_price.data))
+        if form.max_price.data:
+            query = query.filter(Window.max_price <= float(form.max_price.data))
+        if form.min_rating.data:
+            query = query.filter(Window.avg_rating >= float(form.min_rating.data))
+            
+        # 获取所有符合条件的窗口
+        windows = query.all()
+        
+        if windows:
+            # 随机选择一个窗口
+            selected_window = random.choice(windows)
+            return render_template('random_result.html', window=selected_window)
+        else:
+            flash('没有找到符合条件的窗口，请调整筛选条件', 'warning')
+            
+    return render_template('random.html', form=form)
+
+# 添加AJAX路由用于动态更新楼层选项
+@auth_bp.route('/get-floors/<canteen>')
+def get_floors(canteen):
+    floors = db.session.query(Canteen.floor).filter_by(name=canteen).all()
+    return jsonify([(str(f[0]), f'{f[0]}楼') for f in floors])
