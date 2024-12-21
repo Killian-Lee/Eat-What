@@ -6,4 +6,5 @@ flask-wtf
 pymysql
 cryptography
 email_validator
-gunicorn 
+gunicorn
+python-dotenv 

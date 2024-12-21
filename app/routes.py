@@ -233,3 +233,7 @@ def view_window(id):
     window = Window.query.get_or_404(id)
     comments = Comment.query.filter_by(window_id=id).order_by(Comment.created_at.desc()).all()
     return render_template('window_detail.html', window=window, comments=comments)
+
+@auth_bp.route('/health')
+def health_check():
+    return 'OK', 200
