@@ -1,13 +1,14 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, session, jsonify
 from app.forms import (LoginForm, EmailVerificationForm, RegistrationForm, 
-                      ResetPasswordRequestForm, ResetPasswordForm, RandomSearchForm)
-from app.models import User, Window, Canteen, Comment
+                      ResetPasswordRequestForm, ResetPasswordForm, RandomSearchForm, CommentForm)
+from app.models import User, Window, Canteen, Comment, Rating
 from app import db
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from app.utils import generate_verification_code, send_verification_email
 from datetime import datetime, timedelta
 import random
+from sqlalchemy.sql import func
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -233,3 +234,39 @@ def view_window(id):
     window = Window.query.get_or_404(id)
     comments = Comment.query.filter_by(window_id=id).order_by(Comment.created_at.desc()).all()
     return render_template('window_detail.html', window=window, comments=comments)
+
+@auth_bp.route('/window/<int:id>/comment', methods=['GET', 'POST'])
+@login_required
+def add_comment(id):
+    window = Window.query.get_or_404(id)
+    form = CommentForm()
+    
+    if form.validate_on_submit():
+        # 添加评论
+        comment = Comment(
+            content=form.content.data,
+            user_id=current_user.id,
+            window_id=id
+        )
+        db.session.add(comment)
+        
+        # 添加评分
+        rating = Rating(
+            stars=int(form.rating.data),
+            user_id=current_user.id,
+            window_id=id
+        )
+        db.session.add(rating)
+        
+        # 更新窗口平均评分
+        window.avg_rating = (
+            db.session.query(func.avg(Rating.stars))
+            .filter(Rating.window_id == id)
+            .scalar() or 0.0
+        )
+        
+        db.session.commit()
+        flash('评价提交成功！', 'success')
+        return redirect(url_for('auth.view_window', id=id))
+        
+    return render_template('add_comment.html', form=form, window=window)

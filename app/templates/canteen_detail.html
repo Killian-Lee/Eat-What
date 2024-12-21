@@ -22,6 +22,7 @@
                     <p class="card-text">
                         <small class="text-muted">窗口编号：{{ window.number }}</small><br>
                         <small class="text-muted">价格范围：{{ window.min_price }}-{{ window.max_price }}元</small><br>
+                        <small class="text-muted">点评次数：{{ window.comment_count }}次</small><br>
                         <small class="text-muted">平均评分：⭐{{ "%.1f"|format(window.avg_rating) }}</small>
                     </p>
                     <a href="{{ url_for('auth.view_window', id=window.id) }}" class="btn btn-primary">查看详情</a>

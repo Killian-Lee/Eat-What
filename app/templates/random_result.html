@@ -12,6 +12,7 @@
                     <h3>{{ window.canteen.name }}{{ window.canteen.floor }}楼 {{ window.name }}</h3>
                     <p class="mb-2">窗口编号：{{ window.number }}</p>
                     <p class="mb-2">价格范围：{{ window.min_price }}-{{ window.max_price }}元</p>
+                    <p class="mb-2">点评次数：{{ window.comment_count }}次</p>
                     <p class="mb-2">平均评分：⭐{{ "%.1f"|format(window.avg_rating) }}</p>
                 </div>
                 <div class="mt-4">

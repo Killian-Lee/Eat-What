@@ -23,8 +23,12 @@
                 <div class="col-md-6">
                     <p><strong>窗口编号：</strong>{{ window.number }}</p>
                     <p><strong>价格范围：</strong>{{ window.min_price }}-{{ window.max_price }}元</p>
+                    <p><strong>点评次数：</strong>{{ window.comment_count }}次</p>
                     <p><strong>平均评分：</strong>⭐{{ "%.1f"|format(window.avg_rating) }}</p>
                 </div>
+            </div>
+            <div class="mt-3">
+                <a href="{{ url_for('auth.add_comment', id=window.id) }}" class="btn btn-primary">添加评价</a>
             </div>
         </div>
     </div>

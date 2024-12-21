@@ -38,6 +38,11 @@ class Window(db.Model):
     comments = db.relationship('Comment', backref='window', lazy=True)
     ratings = db.relationship('Rating', backref='window', lazy=True)
 
+    @property
+    def comment_count(self):
+        """获取评论数量"""
+        return Comment.query.filter_by(window_id=self.id).count()
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)

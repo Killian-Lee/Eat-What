@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, Regexp, ValidationError
 from app.models import User
 
@@ -94,4 +94,18 @@ class RandomSearchForm(FlaskForm):
         ('5', '5星')
     ])
     submit = SubmitField('随机选择')
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('评论内容', validators=[
+        DataRequired(message='评论内容不能为空'),
+        Length(min=1, max=500, message='评论长度必须在1-500字之间')
+    ])
+    rating = SelectField('评分', choices=[
+        ('1', '1星'),
+        ('2', '2星'),
+        ('3', '3星'),
+        ('4', '4星'),
+        ('5', '5星')
+    ], validators=[DataRequired(message='请选择评分')])
+    submit = SubmitField('提交评价')
   
