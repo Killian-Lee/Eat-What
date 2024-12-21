@@ -24,7 +24,7 @@ def send_verification_email(email, code):
 
 如果这不是您的操作，请忽略此邮件。
 
-此致
+From:
 Eat What 团队'''
         
         mail.send(msg)
