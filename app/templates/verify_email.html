@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}验证邮箱{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">验证邮箱</h2>
+                <p class="text-center">验证码已发送至：{{ session['verification_email'] }}</p>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="verification_code" class="form-label">请输入验证码</label>
+                        <input type="text" class="form-control" id="verification_code" 
+                               name="verification_code" required maxlength="6" 
+                               pattern="\d{6}" title="请输入6位数字验证码">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">验证</button>
+                </form>
+                <div class="mt-3 text-center">
+                    <small class="text-muted">验证码有效期为5分钟</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
